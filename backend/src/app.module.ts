@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { MailerModule } from '@nestjs-modules/mailer';
+// import { MailerModule } from '@nestjs-modules/mailer';
 import * as Sentry from '@sentry/node';
 import { SentryModule } from '@ntegral/nestjs-sentry';
 import { AppController } from './app.controller';
@@ -46,9 +46,9 @@ import { AdminsModule } from './admins/admins.module';
     RunnerModule,
     EventsModule,
     AdminsModule,
-    MailerModule.forRootAsync({
-      useClass: MailerConfig,
-    }),
+    // MailerModule.forRootAsync({
+    //   useClass: MailerConfig,
+    // }),
     TypeOrmModule.forRoot(getDataSourceConfig()),
     SentryModule.forRoot(getSentryConfig()),
   ],
