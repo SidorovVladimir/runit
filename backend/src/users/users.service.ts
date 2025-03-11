@@ -2,11 +2,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 
-import { mkdirSync, openSync, appendFileSync } from 'fs';
+// import { mkdirSync, openSync, appendFileSync } from 'fs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,8 +14,9 @@ import { User } from '../entities/user.entity';
 import { Snippet } from '../entities/snippet.entity';
 import { UserSettings } from '../entities/user-settings.entity';
 import { IUser } from './interfaces/users.interface';
-import { RecoverUserDto } from './dto/recover-user.dto';
-import { cipher, decipher } from './secure/cipher';
+// import { RecoverUserDto } from './dto/recover-user.dto';
+// import { cipher, decipher } from './secure/cipher';
+import { decipher } from './secure/cipher';
 import { UpdateUserSettingsDto } from './dto/update-user-settings.dto';
 
 @Injectable()
@@ -25,7 +26,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Snippet)
     private snippetsRepository: Repository<Snippet>,
-    private readonly mailerService: MailerService,
+    // private readonly mailerService: MailerService,
     @InjectSentry() private readonly sentryService: SentryService,
     @InjectRepository(UserSettings)
     private userSettingsRepository: Repository<UserSettings>,
@@ -102,53 +103,53 @@ export class UsersService {
     };
   }
 
-  async recover({ email, frontendUrl }: RecoverUserDto): Promise<void> {
-    const recoverHash = await cipher(email);
-    const currentUser = await this.find(email);
-    if (!currentUser) {
-      return;
-    }
+  // async recover({ email, frontendUrl }: RecoverUserDto): Promise<void> {
+  //   const recoverHash = await cipher(email);
+  //   const currentUser = await this.find(email);
+  //   if (!currentUser) {
+  //     return;
+  //   }
 
-    await this.usersRepository.update(currentUser.id, {
-      recover_hash: recoverHash,
-    });
+  //   await this.usersRepository.update(currentUser.id, {
+  //     recover_hash: recoverHash,
+  //   });
 
-    setTimeout(async () => {
-      await this.usersRepository.update(currentUser.id, { recover_hash: null });
-    }, 900000);
+  //   setTimeout(async () => {
+  //     await this.usersRepository.update(currentUser.id, { recover_hash: null });
+  //   }, 900000);
 
-    // FIXME: use env var BASE_URL
-    const url = `${frontendUrl}/recovery/${recoverHash}`;
+  //   // FIXME: use env var BASE_URL
+  //   const url = `${frontendUrl}/recovery/${recoverHash}`;
 
-    try {
-      this.mailerService
-        .sendMail({
-          to: email,
-          // FIXME: use i18n
-          subject: 'Ссылка для изменения пароля на runit.hexlet.ru',
-          template: 'recover',
-          context: {
-            url,
-          },
-        })
-        .then((data) => {
-          if (
-            process.env.NODE_ENV !== 'production' &&
-            !process.env.TRANSPORT_MAILER_URL
-          ) {
-            const logsDirName = process.env.LOGS_PATH ?? 'logs';
-            mkdirSync(logsDirName, { recursive: true });
-            openSync(`${logsDirName}/mail.log`, 'a');
-            appendFileSync(`${logsDirName}/mail.log`, `${data.message}\n`);
-          }
-        })
-        .catch((data) => {
-          this.sentryService.debug(data.toString());
-        });
-    } catch (e) {
-      this.sentryService.debug(e.toString());
-    }
-  }
+  //   try {
+  //     this.mailerService
+  //       .sendMail({
+  //         to: email,
+  //         // FIXME: use i18n
+  //         subject: 'Ссылка для изменения пароля на runit.hexlet.ru',
+  //         template: 'recover',
+  //         context: {
+  //           url,
+  //         },
+  //       })
+  //       .then((data) => {
+  //         if (
+  //           process.env.NODE_ENV !== 'production' &&
+  //           !process.env.TRANSPORT_MAILER_URL
+  //         ) {
+  //           const logsDirName = process.env.LOGS_PATH ?? 'logs';
+  //           mkdirSync(logsDirName, { recursive: true });
+  //           openSync(`${logsDirName}/mail.log`, 'a');
+  //           appendFileSync(`${logsDirName}/mail.log`, `${data.message}\n`);
+  //         }
+  //       })
+  //       .catch((data) => {
+  //         this.sentryService.debug(data.toString());
+  //       });
+  //   } catch (e) {
+  //     this.sentryService.debug(e.toString());
+  //   }
+  // }
 
   async checkHash(hash: string): Promise<{ id: number | null }> {
     const email = await decipher(Buffer.from(hash, 'hex'));

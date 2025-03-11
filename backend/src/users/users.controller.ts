@@ -32,7 +32,7 @@ import { ParseIntPipe } from './pipes/parse-int.pipe';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { HttpValidationFilter } from './exceptions/validation-exception.filter';
 import { AuthService } from '../auth/auth.service';
-import { RecoverUserDto } from './dto/recover-user.dto';
+// import { RecoverUserDto } from './dto/recover-user.dto';
 import { UpdateUserSettingsDto } from './dto/update-user-settings.dto';
 
 @ApiTags('users')
@@ -92,15 +92,15 @@ export class UsersController {
     return this.authService.signin(user, res);
   }
 
-  @Post('recover')
-  @UseFilters(new HttpValidationFilter())
-  @ApiCreatedResponse({
-    description: 'Successfully returned recovery hash key',
-  })
-  @ApiBadRequestResponse({ description: 'Validation failed!' })
-  async recover(@Body() recoverUserDto: RecoverUserDto) {
-    return this.usersService.recover(recoverUserDto);
-  }
+  // @Post('recover')
+  // @UseFilters(new HttpValidationFilter())
+  // @ApiCreatedResponse({
+  //   description: 'Successfully returned recovery hash key',
+  // })
+  // @ApiBadRequestResponse({ description: 'Validation failed!' })
+  // async recover(@Body() recoverUserDto: RecoverUserDto) {
+  //   return this.usersService.recover(recoverUserDto);
+  // }
 
   @Get('recover/:hash')
   @UseFilters(new HttpValidationFilter())
