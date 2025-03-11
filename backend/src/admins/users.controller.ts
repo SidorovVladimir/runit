@@ -43,11 +43,12 @@ export class UsersController {
     @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
   ): Promise<any> {
-    const currentUser = req.user as User;
-    const currentLang = await this.adminsService.getCurrentLang(currentUser.id);
     const request = req as Request & {
       flash: (type: string, message?: string) => any;
+      user: User;
     };
+    const currentUser = request.user;
+    const currentLang = await this.adminsService.getCurrentLang(currentUser.id);
     const frontendUrl = this.configService.get<string>('app.frontendUrl');
     const take = 10;
     const users: User[] = await this.adminsService.findAllUsers(page, take);
@@ -69,10 +70,11 @@ export class UsersController {
     @Req() req: Request,
     @I18n() i18n: I18nContext,
   ): Promise<any> {
-    const currentUser = req.user as User;
     const request = req as Request & {
       flash: (type: string, message?: string) => any;
+      user: User;
     };
+    const currentUser = request.user;
     const currentLang = await this.adminsService.getCurrentLang(currentUser.id);
     const frontendUrl = this.configService.get<string>('app.frontendUrl');
     const updateUserDto = { ...updatedUserDto, id: userId };
@@ -100,9 +102,9 @@ export class UsersController {
   @Render('edit-user.pug')
   async editUser(
     @Param('id', ParseIntPipe) userId: number,
-    @Req() req: Request,
+    @Req() req: any,
   ): Promise<any> {
-    const currentUser = req.user as User;
+    const currentUser = req.user;
     const currentLang = await this.adminsService.getCurrentLang(currentUser.id);
     const frontendUrl = this.configService.get<string>('app.frontendUrl');
     const user: User = await this.adminsService.findOneUser(userId);
@@ -120,7 +122,7 @@ export class UsersController {
   @Render('snippets.pug')
   async findAllSnippetsUser(
     @Param('id', ParseIntPipe) userId: number,
-    @Req() req: Request,
+    @Req() req: any,
   ): Promise<{
     snippets: Snippet[];
     userId: number;
@@ -129,7 +131,7 @@ export class UsersController {
     frontendUrl: string;
   }> {
     const frontendUrl = this.configService.get<string>('app.frontendUrl');
-    const currentUser = req.user as User;
+    const currentUser = req.user;
     const currentLang = await this.adminsService.getCurrentLang(currentUser.id);
     const snippets: Snippet[] =
       await this.adminsService.findAllSnippetsUser(userId);
