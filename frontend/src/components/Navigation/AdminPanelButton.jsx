@@ -15,7 +15,7 @@ function AdminPanelButton() {
   });
   return (
     <Nav.Item as="li">
-      <Button as="a" to={ADMIN_LINK.toString()} variant="primary">
+      <Button as="a" href={ADMIN_LINK.toString()} variant="primary">
         {tPA('adminPanel')}
       </Button>
     </Nav.Item>
