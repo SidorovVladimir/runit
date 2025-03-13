@@ -14,6 +14,7 @@ import {
   Render,
   Req,
   Res,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -23,14 +24,16 @@ import { Snippet } from '../entities/snippet.entity';
 import { User } from '../entities/user.entity';
 import { AdminsService } from './admins.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-// import { RoleGuard } from './guards/role.guard';
-// import { Role } from './decorators/roles.decorator';
-// import { UserRole } from './enums/user-role.enum';
+import { RoleGuard } from './guards/role.guard';
+import { Role } from './decorators/roles.decorator';
+import { UserRole } from './enums/user-role.enum';
 import routes from './routes';
+import { HttpExceptionFilter } from './exceptions/http-exceptions.filter';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RoleGuard)
+@UseFilters(HttpExceptionFilter)
 @Controller('admin')
-// @Role(UserRole.Admin)
+@Role(UserRole.Admin)
 export class UsersController {
   constructor(
     private readonly adminsService: AdminsService,
