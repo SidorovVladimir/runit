@@ -18,13 +18,13 @@ import { ConfigService } from '@nestjs/config';
 import { Snippet } from '../entities/snippet.entity';
 import { AdminsService } from './admins.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RoleGuard } from './guards/role.guard';
 import { Role } from './decorators/roles.decorator';
 import { UserRole } from './enums/user-role.enum';
 import routes from './routes';
+import { RoleGuard } from './guards/role.guard';
 import { HttpExceptionFilter } from './exceptions/http-exceptions.filter';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RoleGuard)
 @UseFilters(HttpExceptionFilter)
 @Controller('admin')
 @Role(UserRole.Admin)
